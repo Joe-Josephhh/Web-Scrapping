@@ -9,8 +9,6 @@
 - `requirements.txt` — libraries to install
 - `.gitignore` — common ignores
 - `LICENSE` — MIT license
-- `screenshots/screenshot_code.png` — the original screenshot you provided
-
 ## Quick start
 
 1. Create a virtual environment (recommended)
@@ -43,8 +41,6 @@ quotes-scraper/
 ├── README.md
 ├── LICENSE
 ├── .gitignore
-└── screenshots/
-    └── screenshot_code.png
 ```
 
 ## Contributing
