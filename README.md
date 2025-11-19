@@ -1,47 +1,71 @@
-[README.md](https://github.com/user-attachments/files/23635218/README.md)
 
-**A small, beginner-friendly Python web scraper** that fetches quotes from [quotes.toscrape.com](https://quotes.toscrape.com) and filters them by keywords.
+[scrapping.py](https://github.com/user-attachments/files/23635273/scrapping.py)
+"""quotes-scraper: simple web scraper for quotes.toscrape.com
 
-## What you get
-- `scrapping.py` — main script (CLI-friendly)
-- `requirements.txt` — libraries to install
-- `.gitignore` — common ignores
-- `LICENSE` — MIT license
+Usage:
+    python scrapping.py            # run with defaults
+    python scrapping.py --keywords life love
+"""
+from typing import List
+import requests
+from bs4 import BeautifulSoup
+import argparse
+import sys
 
+def fetch_quotes(url: str) -> List[dict]:
+    """Fetch quotes from a single page of quotes.toscrape.com."""
+    resp = requests.get(url, timeout=10)
+    resp.raise_for_status()
+    soup = BeautifulSoup(resp.text, 'lxml')
+    quote_blocks = soup.find_all('div', class_='quote')
+    results = []
+    for q in quote_blocks:
+        text_tag = q.find('span', class_='text')
+        author_tag = q.find('small', class_='author')
+        if text_tag and author_tag:
+            results.append({
+                'text': text_tag.get_text(strip=True),
+                'author': author_tag.get_text(strip=True),
+            })
+    return results
 
-## Quick start
+def filter_quotes(quotes: List[dict], keywords: List[str]) -> List[dict]:
+    """Return quotes that contain any of the keywords (case-insensitive)."""
+    if not keywords:
+        return quotes
+    lower_keys = [k.lower() for k in keywords]
+    out = []
+    for q in quotes:
+        txt = q['text'].lower()
+        if any(k in txt for k in lower_keys):
+            out.append(q)
+    return out
 
-1. Create a virtual environment (recommended)
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate   # macOS / Linux
-   .venv\Scripts\activate    # Windows (PowerShell)
-   ```
+def main(argv=None):
+    parser = argparse.ArgumentParser(description='Simple quotes scraper for quotes.toscrape.com')
+    parser.add_argument('--url', default='https://quotes.toscrape.com/', help='URL to scrape')
+    parser.add_argument('--keywords', nargs='*', default=['life','love','inspirational','humor','books','reading','friendship','friends','truth','simile'],
+                        help='Keywords to filter quotes (space separated)')
+    parser.add_argument('--limit', type=int, default=0, help='Limit number of printed quotes (0 means no limit)')
+    args = parser.parse_args(argv)
 
-2. Install dependencies
-   ```bash
-   pip install -r requirements.txt
-   ```
+    try:
+        quotes = fetch_quotes(args.url)
+    except Exception as e:
+        print(f'Error fetching quotes: {e}', file=sys.stderr)
+        sys.exit(1)
 
-3. Run the script
-   ```bash
-   python scrapping.py
-   ```
+    filtered = filter_quotes(quotes, args.keywords)
+    if not filtered:
+        print('No quotes found matching keywords.')
+        return
 
-4. Example: filter only for `life` and `love`
-   ```bash
-   python scrapping.py --keywords life love
-   ```
+    count = 0
+    for q in filtered:
+        print(f"{q['text']}  - {q['author']}")
+        count += 1
+        if args.limit and count >= args.limit:
+            break
 
-## Project structure
-```
-quotes-scraper/
-├── scrapping.py
-├── requirements.txt
-├── README.md
-├── LICENSE
-└──.gitignore
-```
-
-## License
-MIT
+if __name__ == '__main__':
+    main()
