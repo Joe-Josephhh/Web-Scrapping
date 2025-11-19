@@ -1,5 +1,4 @@
 [README.md](https://github.com/user-attachments/files/23635218/README.md)
-# Quotes Scraper
 
 **A small, beginner-friendly Python web scraper** that fetches quotes from [quotes.toscrape.com](https://quotes.toscrape.com) and filters them by keywords.
 
@@ -8,7 +7,7 @@
 - `requirements.txt` — libraries to install
 - `.gitignore` — common ignores
 - `LICENSE` — MIT license
-- `screenshots/screenshot_code.png` — the original screenshot you provided
+
 
 ## Quick start
 
@@ -41,16 +40,8 @@ quotes-scraper/
 ├── requirements.txt
 ├── README.md
 ├── LICENSE
-├── .gitignore
-└── screenshots/
-    └── screenshot_code.png
+└──.gitignore
 ```
-
-## Contributing
-Feel free to open issues or pull requests. Suggestions:
-- Add pagination support to scrape multiple pages
-- Save results to a CSV/JSON file
-- Add tests and CI
 
 ## License
 MIT
