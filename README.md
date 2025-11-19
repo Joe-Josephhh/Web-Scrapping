@@ -44,10 +44,4 @@ quotes-scraper/
 ```
 
 ## Contributing
-Feel free to open issues or pull requests. Suggestions:
-- Add pagination support to scrape multiple pages
-- Save results to a CSV/JSON file
-- Add tests and CI
-
-## License
-MIT
+Feel free to open issues or pull requests. 
